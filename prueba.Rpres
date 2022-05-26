@@ -1,0 +1,37 @@
+prueba
+========================================================
+author: 
+date: 
+autosize: true
+
+First Slide
+========================================================
+
+For more details on authoring R presentations please visit <https://support.rstudio.com/hc/en-us/articles/200486468>.
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+Slide With Code
+========================================================
+
+$$
+
+y_{ij} = b_{ij} + \beta_{0} + 
+
+$$
+
+Esta es unda diapositiva importante
+```{r}
+summary(cars)
+plot(cars)
+```
+
+Slide With Plot
+========================================================
+
+```{r, echo=FALSE}
+plot(cars)
+```
+Esta gráfica
