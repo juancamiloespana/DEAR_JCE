@@ -11,7 +11,6 @@ y= 2.48 + 1.01*x + rnorm(n=500)
 
 
 data=data.frame("salario"=y,"experiencia"=x)
-
 modelo=lm(data=data,formula=salario~experiencia)
 
 summary(modelo)
