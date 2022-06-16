@@ -9,9 +9,11 @@ library(goftest)
 library(lmtest)
 
 ##### Cargar datos ####
+url1= 'https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/precios_viviendas.csv'
+url2= 'https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/viviendas_sin_precios.csv'
 
-datos<-read.csv("precios_viviendas.csv")
-datos_nuevos=read.csv("viviendas_sin_precios.csv")
+datos<-read.csv(url1)
+datos_nuevos=read.csv(url2)
 
 
 
@@ -60,15 +62,12 @@ confint(mod1,level=0.95)
 ####Respuesta 6. Bo: (8.987779065, 9.21025384)
 ################ B1: (0.007939784, 0.00815356)
 
-
 pred=predict(mod1,  interval= "confidence")
-
 datos_con_pred=data.frame(datos,pred)
 
 ## respuesta 7: para fila 1: (18.001172, 18.156124) ## un intervalo por fila
 
 pred_test=predict(mod1, newdata=datos_nuevos, interval= "prediction")
-
 datos_nuevos_con_pred=data.frame(datos_nuevos,pred_test)
 
 ## respuesta 8: para fila 1:  (10.367541, 14.80573) ## un intervalo por fila
@@ -153,10 +152,30 @@ bgtest(mod1)
 
 
 ### Respuesta 9: SEgún las gráficas parece que los datos del error no son independientes
-### En las dos pruebas de hipotesis el valor p es no mayores a una significancia de 0.05 entonces no se rechaza la hipotesis nula
-### Por lo tanto, los residuales son indpendientes y cumplen el supuesto
+### En las dos pruebas de hipotesis el valor p no es mayores a una significancia de 0.05 entonces se rechaza la hipotesis nula
+### Por lo tanto, los residuales no son indpendientes y no cumplen el supuesto
 
 
 
 
+library(datasets)
+
+set.seed(1)
+  r1=runif(1,min=10, max=80)
+  r2=runif(1,min=5, max=30)
+  
+  
+  data(iris)
+  
+  
+  a<-iris$Sepal.Length*r1
+  b<-iris$Petal.Length*r2
+  
+  
+  datos1=data.frame("presupuesto_mercadeo"=b, "ventas_totales"=a)
+  
+  
+  mod=lm(ventas_totales~presupuesto_mercadeo,data=datos1)
+  
+  summary(mod)
 
