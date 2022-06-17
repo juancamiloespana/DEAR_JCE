@@ -30,6 +30,7 @@ library(lmtest)
         plot(x1,y)
         abline(mod)
         summary(mod)
+        mean(y)
 
         
   ##### verificar supuestos del modelo
@@ -50,7 +51,7 @@ library(lmtest)
         
         ####Filtrar base para que se eliminen atípicos
         
-        base_modelo=subset(base_modelo, base_modelo$x1<=lim_sup & base_modelo$x1>lim_inf)
+        base_modelo=subset(base_modelo, x1<=lim_sup & x1>lim_inf)
         
         
         #### Verificar base despues de eliminar atípicos
