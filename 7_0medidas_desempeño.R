@@ -14,6 +14,8 @@ set.seed(100)
 x=runif(n=1000,min=20,max=80) #### Genera variable aleatoria 'x' con distribución uniforme de 20 a 80
 x2=runif(n=1000,min=5,max=20)
 x3= rnorm(n=1000,50,1)
+
+getwd()
   
 
 
