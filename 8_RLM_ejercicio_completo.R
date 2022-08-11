@@ -1,33 +1,7 @@
 
-##### Slide 3 Instalación de paquetes ####
+#### 0. inicializar el proyecto #####
 
-  #### para gráficos y funciones útiles
-  install.packages("plotly")
-  install.packages("dplyr")
-  install.packages("COUNT")
-  install.packages("corrplot")
-  install.packages("skimr")
-  
-  ##### Imputación 
-  install.packages("randomForest")
-  
-  ##### VAlidación supuestos 
-  
-  install.packages("car")
-  install.packages("tseries")
-  install.packages("nortest")
-  install.packages("goftest")
-  install.packages("lmtest")
-  
-  ##### para validar multicolonealidad
-  install.packages("regclass") ### para calcular VIF
-  
-  ##### Para calcular MAPE, RMSE MAE
-  install.packages("Metrics")
-  
-
-
-#####Slide 4 Cargar librerías ######
+#####Cargar librerías, las librerías siempre se deberían cargar al principio 
 
   library(corrplot) ###Gráfico de correlaciones
   library(plotly) ###para gráficos bonitos
@@ -41,21 +15,25 @@
   library(lmtest) ### validacion supuestos
   library(randomForest) #### para imputación de datos faltantes
   library(dplyr) #### para case_when para reagrupar variables
-  library(skimr)
+  library(skimr) ### para descripción de los datos 
 
 
-#######Slide 5 Cargar Base de Datos-ejemplo ##############
+#######Cargar Base de Datos-ejemplo 
+  
 url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/base_supermercado2.csv'
 
 data_original<-read.csv(url, dec=",", stringsAsFactors = T)
+
+#### 1. Descripción y limpieza de los datos #####
+
+
 data_original=data_original[,-1] ### eliminar consecutivo
   
 names(data_original)[8]="antiguedad_cliente"
 
 
 
-
-### slide 6  Describir datos y analizar los tipos de variables ####
+### Describir datos y analizar los tipos de variables 
 #####Revisar que las variables queden en el formato correcto 
   str(data_original)
 
@@ -65,15 +43,15 @@ names(data_original)[8]="antiguedad_cliente"
   summary(data_original)
 
 
-#### slide 8. Tratar datos faltantes ####
+#### Tratar datos faltantes 
 
 ####Faltantes-imputación
 table(is.na(data_original))
 
-data_original<-na.roughfix(data_original)
+data_original<-na.roughfix(data_original) ###función de imputación de paquete randomforest
 table(is.na(data_original))
 
-#############Slide 9 revisar categorías en variables categóricas 
+############ revisar categorías en variables categóricas 
 
 ####Una variable con muchas categorías es difícil de analizar, puede hacer el modelo lento y 
 #### generar sobre ajustes, aunque no hay un número exacto para saber qué son muchas, podría utilizarse más de 20 o 30 como referencia
@@ -141,18 +119,20 @@ table(is.na(data_original))
   data_original$producto_frecuente=as.factor(data_original$producto_frecuente)
   str(data_original)
 
-#### slide 10 Tratamiento de fechas ####
+#### slide 10 Tratamiento de fechas 
 
   table(data_original$fecha_ultima_compra)
+  unique(data_original$fecha_ultima_compra)
   
   data_original$fecha_ultima_compra2<-as.Date(data_original$fecha_ultima_compra,"%d/%m/%Y") ##se convierte la columna a formato fecha
+  ###los formatos se pueden encontrar en la ayuda de la función strptime
+  
   data_original$fu_mes=months.Date(data_original$fecha_ultima_compra2, abbreviate = T) ### para extraer el mes
   data_original$fu_ds=weekdays(data_original$fecha_ultima_compra2, abbreviate = T) ###para extraer el día de la semana
   data_original$fu_tri=quarters(data_original$fecha_ultima_compra2, abbreviate = T) ### Para extraer el trimestre
   
   data_original$fu_dm=format(data_original$fecha_ultima_compra2, format="%d") ###Para extraer el día del mes
   data_original$fu_a=format(data_original$fecha_ultima_compra2, format="%Y") ## para extraer el año
-  
   
   
   data_original$fu_mes=as.factor(data_original$fu_mes)
@@ -164,14 +144,14 @@ table(is.na(data_original))
   str(data_original)
 
 
-########## slide 11 Análisis exploratorio #####
+#### 2. Análisis exploratorio #######
 
 #### Explorar variable respuesta 
 ####Histograma sencillo 
   
+v_eliminar=c('id','fecha_ultima_compra','fecha_ultima_compra2')
 
-
-data<-data_original[,-c(1,20,22) ] #Eliminar variables repetidas y id que no se va a usar.
+data<-select(data_original,-v_eliminar) #Eliminar variables repetidas y id que no se va a usar.
   
 hist(data$y/1000000, main= "Histograma de compras mensuales por cliente",
      ylab="Frecuencia", xlab="Promedio compras mensuales por cliente (millones de pesos)") ##
@@ -180,12 +160,12 @@ boxplot(data$y, horizontal = T)
 
 qqPlot(data$y)
 
-jb=jarque.bera.test(data$y)
+jarque.bera.test(data$y)
 
 
-jb[3]<=0.05
 
 ####Histograma fancy
+
 plot_ly(data=data,x=~y  )%>%
   layout(title="Histograma de compras mensuales por cliente",
          yaxis=list(title="Frecuencia"),xaxis=list(title="Histograma de compras mensuales por cliente"))
@@ -225,8 +205,11 @@ mc<-cor(data_num)
 corrplot(mc,type="upper")
 
 
-### slide 12 Eliminación de inusuales ####
+#### 3. Ajsutar mejor modelo posible #####
 
+
+
+###  Eliminación de inusuales (podría ser parte de la limpieza si se quiere)
 
 ######La eliminación de atipicos en la variable respuesta es fundamental 
 
@@ -239,7 +222,7 @@ data=subset(data, data$y<=lim_sup & data$y>lim_inf)
 
 dim(data)
 
-#### Eliminar atipicos segun influencia del modelo
+#### Eliminar atipicos segun influencia del modelo (atípicos variables explicativas)
 
 mod<-lm(y~.,data=data)
 predichos<-predict(mod)
@@ -264,7 +247,7 @@ mape(y2,predichos2) #mape entrenamiento después de eliminar inusuales
 
 
 
-#############slide 13 Separar la muestra de datos en entrenamiento y prueba ####
+#############Separar la muestra de datos en entrenamiento y prueba 
 
 set.seed(987)
 filas_train<-sample(1:length(data2$y),39000)
@@ -297,7 +280,7 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
 
 
 
-####### Slide 14 mirar efecto de multicolinealidad #####
+####### mirar efecto de multicolinealidad 
 
   vifs<-data.frame(VIF(modelo2))
   vifs[order(vifs$GVIF, decreasing=T),]
@@ -337,7 +320,7 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
   #Como el mape no mejora, se dejan las variables con colinealidad data_dep, y modelo2
   
 
-# Slide 15 Usar StepWise sobre modelo 2 dejando las variables correlacionadas####
+#  Usar StepWise sobre modelo 2 dejando las variables correlacionadas
   
   modelo_reducido<-stepAIC(modelo2)
   summary(modelo_reducido)
@@ -364,13 +347,13 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
   mape(data_test_sinid$y,predict_test) 
   rmse(data_test_sinid$y,predict_test)
 
-#### slide 16. Análisis de supuestos ####
+#### 4. Análisis de supuestos #####
+  
   ###Al modelo final validar supuestos y concluir sobre ellos, 
   ###en caso de que no se cumplan buscar correcciones para los incumplimientos o 
   ####justificar si el uso del moedelo no requiere cumplimiento de supuestos.
     
-  
-  
+
   #Supuestos para regresion 
   
   #Guardar residuales en viarble para analizarlo
@@ -410,7 +393,7 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
 
 
   
-  # 3 supuestos independencia de errores pruebas de independencia ####
+  # 3 supuestos independencia de errores pruebas de independencia 
   
   par(mfrow=c(1,3))
   
@@ -423,4 +406,19 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
   #Prueba de durbin watson
   dwtest(modelo_reducido) 
   bgtest(modelo_reducido)
+  
+  
+  
+#### 5. Inferencias y análisis ####
+  
+  
+  #### 1.Significancia de los coeficientes 
+  
+  #### 2. interpretación de los coeficientes 
+  
+  ##### 3. Intervalo de confianza para coeficientes
+
+  
+  
+  
   

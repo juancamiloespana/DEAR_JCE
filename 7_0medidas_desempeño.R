@@ -15,7 +15,7 @@ x=runif(n=1000,min=20,max=80) #### Genera variable aleatoria 'x' con distribuci�
 x2=runif(n=1000,min=5,max=20)
 x3= rnorm(n=1000,50,1)
 
-getwd()
+
   
 
 
@@ -186,22 +186,23 @@ summary(modelo4)
 
 n_obs=length(base_modelo2$y) ## número de observaciones en la base
 perc_eval=0.2 # definir el porcentaje de datos a evaluación
+
 eval20= round(n_obs*perc_eval,0) #Calcular el número de observaciones que representa el porcentaje definido
 
 filas_test=sample(x=c(1:n_obs),size=eval20,replace=F) ## generar una lista aleatorias de filas para seleccionar como evaluación
 
 
 data_train=base_modelo2[-filas_test,]
-data_test=base_modelo2[filas_test,]
+data_test=base_modelo2[filas_test,c(2:4)]
+data_test_y=base_modelo2[filas_test,1]
 
 
 modelo4=lm(y~.,data=data_train)
-
 predict_train=predict(modelo4)
 predict_test=predict(modelo4,newdata = data_test)
 
 mape(data_train$y,predict_train)
-mape(data_test$y,predict_test)
+mape(data_test_y,predict_test)
 
 ######## Crear otro modelo para comparar ####
 
@@ -211,4 +212,4 @@ predict_train=predict(modelo3)
 predict_test=predict(modelo3,newdata = data_test)
 
 mape(data_train$y,predict_train)
-mape(data_test$y,predict_test)
+mape(data_test_y,predict_test)
