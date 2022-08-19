@@ -1,5 +1,6 @@
 
-#### 0. inicializar el proyecto #####
+#### 0. inicializar el proyecto ####
+
 
 #####Cargar librerías, las librerías siempre se deberían cargar al principio 
 
@@ -118,13 +119,16 @@ table(is.na(data_original))
   
   data_original$producto_frecuente=as.factor(data_original$producto_frecuente)
   str(data_original)
+  
+  table(data_original$producto_frecuente)
 
 #### slide 10 Tratamiento de fechas 
 
   table(data_original$fecha_ultima_compra)
   unique(data_original$fecha_ultima_compra)
   
-  data_original$fecha_ultima_compra2<-as.Date(data_original$fecha_ultima_compra,"%d/%m/%Y") ##se convierte la columna a formato fecha
+  data_original$fecha_ultima_compra2<-as.Date(data_original$fecha_ultima_compra,"%d/%m/%Y") 
+  ##se convierte la columna a formato fecha
   ###los formatos se pueden encontrar en la ayuda de la función strptime
   
   data_original$fu_mes=months.Date(data_original$fecha_ultima_compra2, abbreviate = T) ### para extraer el mes
@@ -205,8 +209,8 @@ mc<-cor(data_num)
 corrplot(mc,type="upper")
 
 
-#### 3. Ajsutar mejor modelo posible #####
 
+#### 3. Ajsutar mejor modelo posible #####
 
 
 ###  Eliminación de inusuales (podría ser parte de la limpieza si se quiere)
@@ -221,6 +225,8 @@ lim_inf<- quantile(data$y,0.25) - (IQR(data$y)*1.5 )
 data=subset(data, data$y<=lim_sup & data$y>lim_inf)
 
 dim(data)
+
+boxplot(data$y)
 
 #### Eliminar atipicos segun influencia del modelo (atípicos variables explicativas)
 
@@ -250,7 +256,9 @@ mape(y2,predichos2) #mape entrenamiento después de eliminar inusuales
 #############Separar la muestra de datos en entrenamiento y prueba 
 
 set.seed(987)
-filas_train<-sample(1:length(data2$y),39000)
+n_datos=length(data2$y)
+n_train=round(n_datos*0.8,0)
+filas_train<-sample(1:n_datos,n_train)
 
 
 data_sinid<-data2[filas_train,]###asignar base de entrenamiento  eliminando variable id
@@ -263,17 +271,24 @@ modelo<-lm(data=data_sinid,y~.)
 
 summary(modelo)
 
-mape(data_test_sinid$y, predict(modelo,data_test_sinid))
+
+###calcular mape de test
+
+predichos_test=predict(modelo,data_test_sinid)
+mape(data_test_sinid$y, predichos_test)
 
 ###### depurar - seleccionar variables
 
 # Eliminar variables que no pueda calcular cooeficiente
 
 
+
+
+col_elim=c('porp_compras_licores','prop_compras_bebe','fu_tri' )
+data_dep=data_sinid%>%select(-col_elim)
+
+
 # verificar la colinealidad de variables a eliminar con VIF
-
-
-data_dep=data_sinid[,-c(12,15,22)]
 modelo2<-lm(data=data_dep,y~.)
 summary(modelo2)
 mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
@@ -285,12 +300,17 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
   vifs<-data.frame(VIF(modelo2))
   vifs[order(vifs$GVIF, decreasing=T),]
   
+
+  data_dep2=data_dep%>%select(-edad_cliente)
   
-  data_dep2=data_dep[,-c(1,5)]
   modelo3<-lm(data=data_dep2,y~.)
-  summary(modelo3)
+  vifs<-data.frame(VIF(modelo3))
+  vifs[order(vifs$GVIF, decreasing=T),]
   
   
+  data_dep2=data_dep2%>%select(-valor_promedio_mensual )
+  
+  modelo3<-lm(data=data_dep2,y~.)
   vifs<-data.frame(VIF(modelo3))
   vifs[order(vifs$GVIF, decreasing=T),]
   
@@ -302,8 +322,9 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
   
   #alculo de indicadores en muestra de evaluaciÃ³n (datos que no se utilizan en ajuste)
   
-  predict_test<-predict(modelo2,data_test_sinid)
+ ###antes de eliminar multicolinealidad
   
+  predict_test<-predict(modelo2,data_test_sinid)
   mape(data_test_sinid$y,predict_test)
   rmse(data_test_sinid$y,predict_test)
   
@@ -322,8 +343,11 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
 
 #  Usar StepWise sobre modelo 2 dejando las variables correlacionadas
   
+  
+  summary(modelo2)
   modelo_reducido<-stepAIC(modelo2)
   summary(modelo_reducido)
+  VIF(modelo_reducido)
   
   
   #Calculo de indicador en muestra de entrenamiento
@@ -411,14 +435,45 @@ mape(data_test_sinid$y, predict(modelo2,data_test_sinid))
   
 #### 5. Inferencias y análisis ####
   
+  mean(data_test_sinid$y)
+  mape(data_test_sinid$y,predict_test)
+  mae(data_test_sinid$y,predict_test)
+  hist(residuales/100000,main="Residuales",xlab="Cientos de miles de pesos")
   
-  #### 1.Significancia de los coeficientes 
+  
+  
+  predicciones_total=predict(modelo_reducido,newdata=data, interval="prediction")
+  
+ aumento_compra= predicciones_total[,'lwr'] -data$valor_promedio_mensual 
+ id=names(aumento_compra)
+ df_aumento=data.frame(id, aumento_compra)
+ df_aumento[order(aumento_compra, decreasing=T),] 
+ 
+ df_aumento["aumenta"]=case_when(
+   df_aumento$aumento_compra>10000 ~"Aumenta",
+   df_aumento$aumento_compra<10000 & df_aumento$aumento_compra>-10000 ~"Igual",
+   TRUE~"Disminuye"
+   
+ )
+  
+ table(df_aumento$aumenta)
+ 
+ 
+ 
+ #### 1.Significancia de los coeficientes 
+ 
+ summary(modelo_reducido)
+ 
   
   #### 2. interpretación de los coeficientes 
+ 
+ 
   
   ##### 3. Intervalo de confianza para coeficientes
 
-  
-  
-  
-  
+
+ confint(modelo_reducido,level=.95)
+ 
+ 
+ 
+ 
