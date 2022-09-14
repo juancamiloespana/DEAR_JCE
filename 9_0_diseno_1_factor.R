@@ -119,7 +119,7 @@ dwtest(anova)
 
 
 
-lsd<-LSD.test(y=anova, trt="punto",  group=F)
+lsd<-LSD.test(y=anova, trt="punto",  group=T)
 lsd
 
 hsd<-HSD.test(y=anova,trt="punto",group=F)
