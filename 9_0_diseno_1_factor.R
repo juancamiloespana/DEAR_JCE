@@ -119,7 +119,7 @@ dwtest(anova)
 
 
 
-lsd<-LSD.test(y=anova, trt="punto",  group=T)
+lsd<-LSD.test(y=anova, trt="punto",  group=F)
 lsd
 
 hsd<-HSD.test(y=anova,trt="punto",group=F)
@@ -144,14 +144,14 @@ d= delta/sigma
 #########
 
 
-pwr.t.test( sig.level=.05, power = .90,n=5)
+pwr.t.test(sig.level=.05, power = .90,n=5)
 
 power.t.test(d=delta,sd=sigma, sig.level = .05,power=.90 )
 
 #### determinar la potencia de la muestra observada
 
 
-power.t.test(sd=sigma, sig.level = .10,power=0.85,n=5 )
+power.t.test(sd=sigma,delta=1,sig.level=.05, power = .90 )
 
 ##########En la segunda función se puede omitir
 ####### sigma pero la muestras tienden a hacer más grandes
