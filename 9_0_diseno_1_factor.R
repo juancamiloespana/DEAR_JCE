@@ -135,28 +135,33 @@ plot(thsd)
 
 
 sigma=sd(oxigeno)
-
 hist(oxigeno)
+mean(oxigeno)
 delta=1
-d= delta/sigma
 
 
-#########
+
+######### determinar potencia
 
 
-pwr.t.test(sig.level=.05, power = .90,n=5)
+power.t.test(d=delta,sd=sigma,n=5 )
 
-power.t.test(d=delta,sd=sigma, sig.level = .05,power=.90 )
+#### determinar tamaño de muestra
 
-#### determinar la potencia de la muestra observada
-
-
-power.t.test(sd=sigma,delta=1,sig.level=.05, power = .90 )
-
-##########En la segunda función se puede omitir
-####### sigma pero la muestras tienden a hacer más grandes
+power.t.test(d=delta,sd=sigma,sig.level=.05, power = .90 )
 
 
+##### determinar delta ####
+power.t.test(n=5,sd=sigma,sig.level=.05, power = .90 )
+
+
+########## se puede omitir sigma pero se asume sd= 1
+
+power.t.test(d=delta,sig.level=.05, power = .90 )
+
+
+
+######
 
 
 
