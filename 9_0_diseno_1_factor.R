@@ -6,7 +6,6 @@
 
 
 
-
 ##### librerias
 library(pwr)
 library(gplots)
@@ -25,7 +24,8 @@ datos$punto<-as.factor(datos$punto) ### los factores estudiados siempre deben es
 
 attach(datos)
 
-
+datos$punto
+punto
 ## Punto 2 y 3
 
 

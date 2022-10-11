@@ -1,10 +1,10 @@
 
-rm(list=ls())
+
 ###########
 
 library(graphics)  ### grafico de interacción
 library(gplots) ## gráfico de medias 
-
+library(lmtest)
 
 
 ########### ejercicio 1: Crecimiento de bacterias
@@ -34,16 +34,18 @@ plotmeans(crecimiento~medio,bars=T)
 
 
 formula <- crecimiento  ~ tiempo + medio
-plot.design(formula, col= "coral", xlab="Efectos", ylab="Promedio de crecimiento")
+plot.design(formula,  xlab="Efectos", ylab="Promedio de crecimiento")
 
 
 interaction.plot(medio, tiempo,crecimiento, ylab="Promedio de crecimiento")
+
+interaction.plot( tiempo,medio,crecimiento, ylab="Promedio de crecimiento")
 
 
 
 ###############################Ejercicio 2: baterias
 
-rm(list=ls())
+
 url_bat='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/bateria.csv'
 
 bateria<-read.csv(url_bat,sep=";")
@@ -101,5 +103,18 @@ medias<-model.tables(x=anova_bat,type="means")
 
 
 residuales= anova_bat$residuals
+
+shapiro.test(residuales)
+bptest(anova_bat)
+bgtest(anova_bat)
+dwtest(anova_bat)
+
+
+###### ejercicio
+
+## 1. Calcular la potencia de las inferencias con el tamaño de la muestra que se tiene
+## 2. Identificar entre qué pares de tratamientos hay diferncias singificativas
+
+
 
 
