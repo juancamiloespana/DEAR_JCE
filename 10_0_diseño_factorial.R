@@ -5,6 +5,7 @@
 library(graphics)  ### grafico de interacción
 library(gplots) ## gráfico de medias 
 library(lmtest)
+library(agricolae)
 
 
 ########### ejercicio 1: Crecimiento de bacterias
@@ -88,7 +89,7 @@ interaction.plot( material,temperatura, tiempo_horas, ylab="Tiempo en horas")
 
 #### Ajsutar modelo y mirar singificancia de los efectos ###
 
-anova_bat=aov(tiempo_horas~material+temperatura+temperatura*material)
+anova_bat=aov(tiempo_horas~temperatura*material)
 summary(anova_bat)
 
 ### tabla de efectos
@@ -96,7 +97,7 @@ efectos<-model.tables(x=anova_bat,type="effects")
 
 
 ### tabla de medias
-medias<-model.tables(x=anova_bat,type="means")
+medias<-model.tables(x=anov a_bat,type="means")
 
 
 #### Verificación de supuestos con residuales ###
@@ -114,7 +115,25 @@ dwtest(anova_bat)
 
 ## 1. Calcular la potencia de las inferencias con el tamaño de la muestra que se tiene
 ## 2. Identificar entre qué pares de tratamientos hay diferncias singificativas
+mean(bateria$tiempo_horas)
+
+sigma=sd(bateria$tiempo_horas)
+delta=90
+
+power.t.test(d=delta,sd=sigma,n=5 )
 
 
+###
 
+
+thsd<-TukeyHSD(anova_bat)
+plot(thsd, cex.axis=0.5, las=1)
+
+
+hsd<-HSD.test(y=anova_bat, trt=c("material","temperatura"), console=T, group=F)
+hsddf=data.frame(hsd$comparison)
+
+
+lsd<-LSD.test(y=anova_bat, trt=c("material","temperatura"), console=T, group=F)
+lsddf=data.frame(lsd$comparison)
 

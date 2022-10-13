@@ -30,17 +30,27 @@ ventas$Menu=as.factor(ventas$Menu)
 mean(ventas$ventas)
 
 sigma=sd(ventas$ventas)
-delta=18
-d= delta/sigma
-power=0.80
-sig=0.10
+delta=5 ## definido previamente
+beta=0.10 ## error tipo II, falso negativo, ho es falsa y acepto
+sig=0.05 ## error tipo I, falso positivo, ho es verdadero y rechazo
+power=1-beta
+
+## ¿cuál de los dos errores subirían primero?
 
 #########
 
-pwr.t.test(d=d, sig.level=sig, power = power)
 
 power.t.test(d=delta, sd=sigma, sig.level = sig,power=power)
 
+
+#### Modificar argumentos
+delta=17 ## definido previamente
+beta=0.10 ## error tipo II, falso negativo, ho es falsa y acepto
+sig=0.18 ## error tipo I, falso positivo, ho es verdadero y rechazo
+power=1-beta
+
+
+power.t.test(d=delta, sd=sigma, sig.level = sig,power=power)
 
 ############## 5. Análsis descriptivo ####
   ######5.1 Efectos principales #########
@@ -53,6 +63,8 @@ power.t.test(d=delta, sd=sigma, sig.level = sig,power=power)
 
   boxplot(ventas$ventas~Menu,main="Ventas por Menu",ylab="ventas semanales miles de dólares")
   plotmeans(ventas$ventas~Menu,main="Ventas por Menu",ylab="ventas semanales miles de dólares")
+  
+  par(mfrow=c(1,1))
   
   formula=ventas$ventas~ventas$Menu +ventas$Costa
   plot.design(formula,  xlab="Efectos", ylab="Ventas semanales", main="Comparación efectos principales")
@@ -101,20 +113,14 @@ summary(anova_franc)
 ############ 10. Comparación de tratamientos ####
 
 thsd<-TukeyHSD(anova_franc)
-plot(thsd)
+plot(thsd,cex.axis=0.7,las=1)
 
 
 hsd<-HSD.test(y=anova_franc, trt=c("ventas$Costa","ventas$Menu"), console=T, group=F)
-hsddf=data.frame(hsd$comparison)
-write.csv(hsddf,"hsddf.csv")
-
-
-
 
 
 lsd<-LSD.test(y=anova_franc, trt=c("ventas$Costa","ventas$Menu"), console=T, group=F)
-lsddf=data.frame(lsd$comparison)
-write.table(lsddf,"lsddf.csv",sep=";")
+
 
 
 
@@ -153,9 +159,7 @@ cvm.test(residuales,pnorm,mean=0,sd=sd(residuales)) ###Cramer von mises
 
 
 #### 11.2 supuesto Varianza constante - graficos #####
-par(mfrow=c(1,2))
-plot(ventas$ventas,residuales)
-abline(h=0)
+
 
 
 plot(predict(anova_franc),residuales)
