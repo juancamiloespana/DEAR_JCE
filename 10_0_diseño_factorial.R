@@ -97,7 +97,7 @@ efectos<-model.tables(x=anova_bat,type="effects")
 
 
 ### tabla de medias
-medias<-model.tables(x=anov a_bat,type="means")
+medias<-model.tables(x=anova_bat,type="means")
 
 
 #### Verificación de supuestos con residuales ###

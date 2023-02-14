@@ -85,8 +85,6 @@ automestima1.1
 #####la columna ges (Generalize effect size ses la cantidad de variabilidad explicada Intra sujetos
 ###EL GES se calcula con SSTR/(SST)
 
-
-
 ### esta es otra anova que muestra información adicional
 automestima2=aov(data=selfesteem,f)
 summary(automestima2)
@@ -110,7 +108,7 @@ url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/tiempos_
 sudoku=read.csv(url,sep=";",stringsAsFactors = T)
 
 
-### realizar ejercicio de sudokus
+### realizar ejercicio de sudokus  
 
 
 
@@ -164,7 +162,7 @@ selfesteem2 %>%
 ###########ANOVAs
 
 
-f=score~time*treatment+Error(id/(treatment*time)))
+f=score~time*treatment+Error(id/(treatment*time))
 
 automestima1<-anova_test(data=selfesteem2,f)
 automestima1
@@ -183,7 +181,7 @@ summary(automestima2)
 pwc <- selfesteem2 %>%
   group_by(treatment) %>%
   pairwise_t_test(
-    score ~ treatment, paired = TRUE,
+    score ~ time, paired = TRUE,
     p.adjust.method = "bonferroni"
   )
 pwc

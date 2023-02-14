@@ -1,3 +1,16 @@
+#####inferencia
+
+xi = runif(1000, 25 , 35)  #### tiempo duración población
+mean(xi)  ### media poblacional
+sd(xi)    ### desviacion poblacional
+
+
+
+
+
+
+
+
 
 ###Carga de paquetes
 
