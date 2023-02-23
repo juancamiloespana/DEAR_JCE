@@ -36,3 +36,10 @@ mean(datos_full$salario)### para identificar que tan alto es el mae, se compara 
 cuadrado_error=datos_full$error**2 ## en lugar de valor absoluto se puede usar el error al cuadrado
 cuadrado_medio_error= mean(cuadrado_error) ##mse: mean square error, sirve de medida de desempeño del modelo
 rmse= sqrt(cuadrado_medio_error) ### rmse: root mean square error, para quitar el efecto del cuadrado se saca raiz, asi las unidades de medida vuelven a ser las originales (unidades de variable respuesta)
+
+######### resolver ejercicio 2
+
+### punto 2
+summary(modelo1)
+mean(datos$salario)
+
