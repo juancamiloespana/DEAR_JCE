@@ -37,9 +37,14 @@ cuadrado_error=datos_full$error**2 ## en lugar de valor absoluto se puede usar e
 cuadrado_medio_error= mean(cuadrado_error) ##mse: mean square error, sirve de medida de desempeño del modelo
 rmse= sqrt(cuadrado_medio_error) ### rmse: root mean square error, para quitar el efecto del cuadrado se saca raiz, asi las unidades de medida vuelven a ser las originales (unidades de variable respuesta)
 
-######### resolver ejercicio 2
+######### resolver ejercicio 2 completo 
 
-### punto 2
-summary(modelo1)
-mean(datos$salario)
+### punto 1
+
+
+
+
+
+
+
 
