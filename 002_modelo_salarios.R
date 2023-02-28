@@ -42,9 +42,27 @@ rmse= sqrt(cuadrado_medio_error) ### rmse: root mean square error, para quitar e
 ### punto 1
 
 
+url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/salario.csv'
+datos=read.csv(url, sep=',', dec='.') ## se configura los argumentos de acuerdo al archivo que se va a vcargar
 
 
+modelo=lm(salario~experiencia, data=datos)
+summary(modelo)
+mean(datos$salario) ## para comparar contra la desviacion de errores
+### con base en el resumen se hacen los puntos: 2, 3, 4, 5
 
 
+confint(modelo, level=0.95) ## punto 6
 
+int_conf_va=predict(modelo,interval='confidence') ###punto 7
+
+df_pred=data.frame(datos,int_conf_va) ### para analizar intervalos de valores ajustados
+
+
+###punto 8: cargar datos nuevos y hacer predicciones
+ruta='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/cambio_experiencia.csv'
+datos_nuevos= read.csv(ruta)
+colnames(datos_nuevos)=c('x','experiencia') ## cambiar nombre a x, debe ser igual a como se llama en la funcion lm
+
+int_pred=predict(modelo, newdata=datos_nuevos, interval='prediction') ###punto 8
 
