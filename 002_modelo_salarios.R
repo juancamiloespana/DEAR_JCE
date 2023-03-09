@@ -66,3 +66,8 @@ colnames(datos_nuevos)=c('x','experiencia') ## cambiar nombre a x, debe ser igua
 
 int_pred=predict(modelo, newdata=datos_nuevos, interval='prediction') ###punto 8
 
+
+### punto 9 ####
+
+summary(modelo1)
+
