@@ -49,6 +49,16 @@ x0=data.frame('ID'=seq(1:2000))
 x5=data.framex4*(0.2)+(rnorm(2000)))
 names(x5)='experiencia'
 
+n=2000
+name='genero'
+cat=c('PhD','Master','Especialización', 'Pregrado', 'Bachillerato')
+x6=cat_feat(cat,n,name)
 
+x7= data.frame('prom_anos_por_emp'=rnorm(2000, 10, 2))
 
+x8= data.frame('score_inteligencia_emoc'=rnorm(2000, 50, 8))
+
+x9= data.frame('score_program'=runif(2000, 10,100))
+
+x10 = 
 
