@@ -19,6 +19,13 @@ name='ingles'
 cat=c("A1",'A2','B1','B2','C1','C2')
 x1=cat_feat(cat,n,name)
 
+x1$x_num=case_when(
+  x1$x_cat %in%  c("A1",'A2') ~ -1,
+  x1$x_cat %in%  c("C1",'C2') ~ 2,
+  TRUE ~0
+  
+  )
+
 n=2000
 name='genero'
 cat=c("F",'M')
@@ -40,13 +47,11 @@ x3$x_num<-case_when(
   
 )
 
-
-
 x4=data.frame('edad'=runif(2000,24,59))
 
 x0=data.frame('ID'=seq(1:2000))
 
-x5=data.framex4*(0.2)+(rnorm(2000)))
+x5=data.frame(x4*(0.2)+rnorm(2000))
 names(x5)='experiencia'
 
 n=2000
@@ -60,5 +65,26 @@ x8= data.frame('score_inteligencia_emoc'=rnorm(2000, 50, 8))
 
 x9= data.frame('score_program'=runif(2000, 10,100))
 
-x10 = 
+x10 = data.frame('num_conex'=runif(2000, 5, 1000))
+
+x11 = data.frame('num_publ'=runif(2000, 5, 2000))
+
+x12=data.frame('num_reacc'=runif(2000, 10, 3000))
+
+n=2000
+name='tipo_cargo'
+cat=c('Junior','Senior')
+x13=cat_feat(cat,n,name)
+
+b1=5
+b2=1
+b3=6
+b4=4
+b5=2
+
+salario= x13$x_num*x5$experiencia*b1  +x8^2*b2 + x9*b3 +x1$x_num + x3$x_num*b5
+
+salario=salario + rnorm(2000,salario*0.05, salario*0.01)
+
+hist(salario$score_inteligencia_emoc)
 
