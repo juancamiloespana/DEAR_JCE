@@ -14,7 +14,7 @@ set.seed(100)
 x=runif(n=1000,min=20,max=80) #### Genera variable aleatoria 'x' con distribución uniforme de 20 a 80
 x2=runif(n=1000,min=5,max=20)
 x3= rnorm(n=1000,50,1)
-
+x4=runif(1000, 5, 30)
 
   
 
@@ -23,8 +23,10 @@ e=rnorm(1000,0,2) ### Se genera un error aleatorio normal
 y= 30 + 0.5*x + 0.3*x2+ e  #### Genera la variable respuesta con base en ecuación de recta
 y[901:1000]= runif(10,150,200) #### Genera atípicos para la variable respuesta
 
-base_modelo=data.frame(y,x,x2,x3)
+base_modelo=data.frame(y,x,x2,x3, x4)
+colnames(base_modelo)=c("precio",'m2','n_rutas_t','n_hab','anos')
 
+write.csv(base_modelo, 'data\\p_viviendas_ind.csv')
 
 
 
