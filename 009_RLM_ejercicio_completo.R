@@ -86,14 +86,18 @@ df2$fecha_ultima_compra2=as.Date(df2$fecha_ultima_compra, format="%d/%m/%Y")
 df2=df2[,-20] ### para eliminar columna de fecha repetida
 
 df2$m_fuc=months.Date(df2$fecha_ultima_compra2) ##extrae el mes de una fecha
+df2$ds_fuc=weekdays(df2$fecha_ultima_compra2) ##extrae el dia de la semana de una fecha
+df2$q_fuc=quarters(df2$fecha_ultima_compra2) ### extrae el trimestre
+df2$dm_fuc=format(df2$fecha_ultima_compra2, format='%d') ### extrae el día del mes
 
-##se convierte la columna a formato fecha
-###los formatos se pueden encontrar en la ayuda de la función strptime
 
-### para extraer el mes
-###para extraer el día de la semana
-### Para extraer el trimestre
-###Para extraer el día del mes
+#### convertirlas a fomato facotr
+df2$m_fuc=as.factor(df2$m_fuc)
+df2$ds_fuc= as.factor(df2$ds_fuc)
+df2$q_fuc=as.factor(df2$q_fuc)
+df2$dm_fuc=as.numeric(df2$dm_fuc)
+
+df2=df2[,-21 ] ### para eliminar la columna fecha ultima compra
 
 
 
@@ -105,13 +109,43 @@ df2$m_fuc=months.Date(df2$fecha_ultima_compra2) ##extrae el mes de una fecha
 #### Explorar variable respuesta 
 ####Histograma sencillo 
 
+hist(df2$y)
+
 ####Histograma fancy
+plot_ly(data=df2, x=~y, type="histogram")%>%
+layout(title='Histograma promedio de compras')
 
 #### separar variables categóricas y numéricas
+df_num=df2%>%select_if(is.numeric) ### selecciono solo las numericas
+df_fac=df2%>%select_if(is.factor) ### selecciono solo las numericas
+
 #### analizar categoricas concluir cuáles tiene influencia
+
+boxplot(data=df2, y~genero)
+plot_ly(data=df2, y=~y, x=~genero, type="box")%>%
+  layout(title="Promedio de compra por género")
+
+
+plot_ly(data=df2, y=~y, x=~reportado_data_credito, type="box")%>%
+  layout(title="Promedio de compra por género")
+
+
+plot_ly(data=df2, y=~y, x=~medio_apgo, type="box")%>%
+  layout(title="Promedio de compra por género")
+
+
+plot_ly(data=df2, y=~y, x=~producto_frecuente, type="box")%>%
+  layout(title="Promedio de compra por género")
+
+
+plot_ly(data=df2, y=~y, x=~ds_fuc, type="box")%>%
+  layout(title="Promedio de compra por género")
 
 ### Analizar correlaciones de numericas 
 
+mc=cor(df_num)
+
+corrplot(mc)
 
 
 #############################################################################################
