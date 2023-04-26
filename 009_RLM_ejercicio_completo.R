@@ -20,7 +20,6 @@ library(skimr) ### para descripcion de los datos
 library(caTools) ###separar muestra entrenamiento y evaluacion
 
 
-#######Cargar Base de Datos-ejemplo ########3
 
 ruta='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/base_supermercado2.csv'
 df= read.csv(ruta,stringsAsFactors = T)
@@ -151,26 +150,146 @@ corrplot(mc)
 #############################################################################################
 #### 3. Ajsutar mejor modelo posible ########################################################
 #############################################################################################
+set.seed(123) ### para que resultado sea igual
+df=sample.split(df2$id,SplitRatio = 0.8) ### separar muestra eval- entrenamiento
+df_train=subset(df2[,-1], df==T) ## muestra entrenamiento
+df_test=subset(df2[,-1], df==F) ### muestra de evaluacion
 
+mod1=lm(y~. -prop_compras_bebe -q_fuc, data=df_train) ### primer modelo
+summary(mod1)
+AIC(mod1) ## calucla AIC
 
-### Separar la muestra de datos en entrenamiento y prueba #####
-#### ajustar modelo y probar mape de evaluacion y entrenamiento ####
+###ind entrenamiento####
+
+pred=predict(mod1) ### predicciones entrenamiento
+mape(df_train$y, pred)#### mape entrenamiento
+rmse(df_train$y, pred) ##rmse entrenamiento
+
+##### indicadores evaluacion
+
+pred_test=predict(mod1, newdata=df_test) ### prediccion evaluación
+mape(df_test$y, pred_test) ## mape evaluación
+rmse(df_test$y, pred_test)
+
+#
 ### Eliminar atipicos  y medir impacto en evaluacion y entrenamiento
-#### verificar la colinealidad de variables a eliminar con VIF
+
+im=influence.measures(mod1) ### tabla de datos de influencia
+im_at=as.numeric(row.names(summary(im))) ### filas en las que identifco atipicos
+
+df_train2=df_train[-im_at,] ### eliminar atipicos
+
+mod2=lm(y~., data=df_train2)
+AIC(mod2)
+
+pred_train=predict(mod2)
+mape(df_train2$y, pred_train)
+rmse(df_train2$y, pred_train)
+
+### evaluación
+pred_test=predict(mod2, newdata=df_test)
+mape(df_test$y, pred_test)
+rmse(df_test$y, pred_test)
+
+
+#### verificar la multicolinealidad de variables a eliminar con VIF
+
+summary(mod1)
+
+df_vif=data.frame(VIF(mod1))
+arrange(df_vif, -GVIF)
+
+mod1=lm(y~. -prop_compras_bebe -q_fuc-prop_compras_verduras-edad_cliente, data=df_train)
+
+df_vif=data.frame(VIF(mod1))
+arrange(df_vif, -GVIF)
+
+pred_train=predict(mod1)
+mape(df_train$y, pred_train)
+
+
+pred_test=predict(mod1, newdata=df_test)
+mape(df_test$y, pred_test)
+
 ####  seleccionar variables
+
+mod_reducido=stepAIC(mod1)
+summary(mod_reducido)
+
+AIC(mod_reducido)
+pred_test=predict(mod_reducido, newdata=df_test)
+mape(df_test$y, pred_test)
 #### validar interacciones 
 
+mod1=lm(y~.-prop_compras_bebe -q_fuc-prop_compras_verduras-edad_cliente+num__prom_compras_mensuales*valor_promedio_por_compra, data=df_train)
+summary(mod1)
+### no es significativa la interacción
+
+### validar transformaciones
+
+
+neg=df_train[df_train$y>=0,]
+mod1=lm(y~.-prop_compras_bebe -q_fuc-prop_compras_verduras-edad_cliente+num__prom_compras_mensuales*valor_promedio_por_compra, data=neg)
+modelo_reducido=stepAIC(mod1)
+
+powerTransform(modelo_reducido) ### muestra que no requiere transformación
+### esta función sólo se puede aplicar a valores positivos de y
 
 
 ############################################################################################
 #### 4. Análisis de supuestos ##############################################################
 ############################################################################################
+#Guardar residuales en viarble para analizarlo
+residuales<-modelo_reducido$residuals
+
+# 1 Supuesto de normalidad -Graficos  
+#Histograma
+par(mfrow=c(1,3))
+hist(residuales)
+
+#qqplot fancy
+qqPlot(residuales) # Si se salen de las bandas generalmente no cumple normalidad
+
+# boxplot 
+boxplot(residuales, horizontal = T)
+
+
+#  1 Supuesto de normalidad -pruebas estadísticas 
+
+#shapiro.test(residuales) #shapiro wilk no sirve para más de 5000 observaciones
+
+jarque.bera.test(residuales) #jarque bera test  
+ks.test(x=residuales,pnorm,0,sd(residuales)) #kolmogorov smirnov
+ad.test(residuales, pnorm, 0, sd(residuales)) #Anderson darling
+cvm.test(residuales,pnorm, 0, sd(residuales))  ###Cramer von mises
+
+
+#  2 supuesto Varianza constante - graficos
+
+plot(predict(modelo_reducido),residuales)
+abline(h=0)
+
+# 2 supuesto Varianza constante - prueba estadísticas 
+bptest(modelo_reducido) ##breusch pagan test
 
 
 
-############################################################################################
-#### 5. Inferencias y análisis #############################################################
-############################################################################################
+
+
+# 3 supuestos independencia de errores pruebas de independencia 
+
+par(mfrow=c(1,3))
+
+#Orden vs residuales
+plot(residuales)
+#acf y pacf
+acf(residuales)
+pacf(residuales)
+
+#Prueba de durbin watson
+dwtest(modelo_reducido) 
+bgtest(modelo_reducido)
+
 
 
 
