@@ -15,7 +15,7 @@ library(lmtest)
 #########cargar datos
 
 ### Para analizar los datos en r, solo puede haber una columna por cada variable
-url="https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/oxigeno.csv"
+url="https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/oxigeno.csv"
 
 datos<-read.csv(url,sep=";",dec=",",stringsAsFactors = T)
 str(datos)
@@ -107,8 +107,6 @@ dwtest(anova)
 
 
 ### El procedimiento de validacion de supuestos es el mismo que en RLM
-
-
 
 #########################Comparación de tratamientos#################
 
