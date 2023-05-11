@@ -28,16 +28,10 @@ plotmeans(data=datos, oxigeno_disuelto~Punto)
 
 
 
-### resumen promedios #######
-
-
-### Grafico de medias  ##################################
-
-
-
-
 # Punto 4  anova y significancia del modelo###############
 
+mod1=aov(data=datos,oxigeno_disuelto~Punto)
+summary(mod1)
 
 
 
@@ -45,14 +39,36 @@ plotmeans(data=datos, oxigeno_disuelto~Punto)
 
 ### tabla de medias
 
-### tabla de efectos
+model.tables(mod1, type="means") ### calcular medias
 
+unique(predict(mod1)) ### predicciones unicas, hay tantas predicciones como tratamientos
+
+### tabla de efectos
+model.tables(mod1, type="effects")
 
 ####punto 6 validar supuestos ##########
+res=mod1$residuals
+
+###
+hist(res)
+
+shapiro.test(res) ## se cumple supuesto de normalidad de residuales valor p > a 0.05(significancia)
+
+bptest(mod1) ## se cumple supuesto de varianza constante valorP > 0.05
+
+bgtest(mod1) ## se cumple supuesto de independencia
+
+dwtest(mod1) ### se cumple supuesto de independencia
+
 
 
 #### punto 7 Comparación de tratamientos  #############
 
+lsd=LSD.test(y=mod1, trt="Punto",group=F)
+lsd
+
+hsd=HSD.test(y=mod1, trt="Punto",group=F)
+hsd
 
 #### punto 8 tamaño de muestras ###################
 
