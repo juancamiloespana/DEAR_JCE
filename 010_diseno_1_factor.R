@@ -72,3 +72,25 @@ hsd
 
 #### punto 8 tamaño de muestras ###################
 
+alpha=0.10  ### decir que la empresa contamina cuando realmente no lo hace
+errorII= 0.05 ### decir que no contamina cuando sí lo hace
+poten=1-errorII
+delta=1 ### usando la varianza y media como referente
+
+mean(datos$oxigeno_disuelto)
+sigma=sd(datos$oxigeno_disuelto) ## varianza variable respuesta
+
+
+power.t.test(delta=delta,sd=sigma, power=poten, sig.level = alpha)
+
+
+
+### en caso de no poder recolectar mas muestras
+
+
+power.t.test(n=5, delta=delta,sd=sigma, power=poten, sig.level = NULL)
+
+
+
+power.t.test(n=5, delta=NULL,sd=sigma, power=poten, sig.level = 0.2)
+
