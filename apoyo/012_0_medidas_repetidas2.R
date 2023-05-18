@@ -166,6 +166,8 @@ f=score~time*treatment+Error(id/(treatment*time))
 
 automestima1<-anova_test(data=selfesteem2,f)
 automestima1
+get_estimates(automestima1)
+get
 
 
 #####la columna ges (Generalize effect size ses la cantidad de variabilidad explicada Intra sujetos
@@ -173,6 +175,8 @@ automestima1
 
 automestima2=aov(f, data=selfesteem2)
 summary(automestima2)
+
+
 
 ###LA anova de aov permite ver las suma de cuadrados
 
@@ -258,7 +262,11 @@ ansiedad1
 
 ansiedad2=aov(f, data=anxiety)
 summary(ansiedad2)
+install.packages("emmeans")
+library(emmeans)
+emmeans(ansiedad2, ~time)
 
+model.tables(ansiedad2, type='effects')
 ###LA anova de aov permite ver las suma de cuadrados
 
 ###Comparación de tratamientos #
