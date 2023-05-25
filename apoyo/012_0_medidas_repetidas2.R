@@ -17,12 +17,9 @@ library(ggpubr)
 library(WRS2) ###Paquete con conjunto de datos ejemplo
 
 
-
-
 ############################################
 ########## E.1 CArgar datos  Intra sujetos puro 1 vía- 1 factor ##########
 ############################################
-
 
 data("selfesteem")
 
