@@ -130,6 +130,8 @@ anxiety <- anxiety %>%
 anxiety$id<-as.factor(anxiety$id)
 anxiety$time<-as.factor(anxiety$time)
 
+table(anxiety$time)
+
 attach(anxiety)
 
 ############# Análisis exploratorio
