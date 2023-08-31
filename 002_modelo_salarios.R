@@ -8,19 +8,6 @@ plot(datos$salario~datos$experiencia)
 
 
 
-
-### pregunt<as###
-
-#Ajuste un modelo de regresión lineal y genere el resumen para el modelo de salarios vs años de experiencia
-#Analice e interprete los coeficientes estimados y su desviación
-#Analice la desviación estándar del error
-#Establezca la ecuación del modelo y la ecuación del valor predicho
-#Plantee las pruebas de hipótesis para verificar la significancia del modelo y concluya sobre la significancia de cada coeficiente y del modelo en general indique cuáles son los estadísticos de prueba utilizados y los valores p
-#Indique los intervalos de confianza para la estimación de los coeficientes
-#Indique los intervalos de confianza para los valores ajustados de la base histórica (predicción de años de experiencia de la base de entrenamiento del modelo)
-#Indique un intervalo de predicción para un conjunto de datos nuevos con los que no se entrenó el modelo (dados en R: cambio experiencia)
-#Diga cuál es el coeficiente de determinación y analícelo.
-
 #Con esta funcion se ajusta/entrean un modelo de regresion lineal
 mod1 <- lm(salario~experiencia, data = datos)
 # lwd = para que la linea sea mas gruesa
@@ -40,3 +27,19 @@ mean(datos$error)
 sd(datos$error)
 
 mean(datos$salario)
+
+#### intervalo de confianza es para coeficientes de regresion
+
+confint(mod1, level=0.95)
+
+### intervalo confianza valores ajustados
+
+datos$va=predict(mod1, interval = "confidence")
+
+### intervalo de predicciones o datos nuevso
+xnuevo=datos$experiencia+1
+xnuevo=data.frame(experiencia=xnuevo[1]) ## para convertir columna de x nuevos en data frame y garantizar que el nombre de columna es igual al nombre de columna con el que se entrenó
+
+
+pred=predict(mod1, newdata=xnuevo, interval="prediction")
+newdataframe=data.frame(xnuevo, pred)
