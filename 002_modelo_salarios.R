@@ -39,7 +39,7 @@ datos$va=predict(mod1, interval = "confidence")
 ### intervalo de predicciones o datos nuevso
 xnuevo=datos$experiencia+1
 xnuevo=data.frame(experiencia=xnuevo[1]) ## para convertir columna de x nuevos en data frame y garantizar que el nombre de columna es igual al nombre de columna con el que se entrenó
+xnuevo=data.frame(experiencia=5)
 
-
-pred=predict(mod1, newdata=xnuevo, interval="prediction")
+pred=predict(mod1, newdata=xnuevo, interval="prediction", level = 0.8)
 newdataframe=data.frame(xnuevo, pred)
