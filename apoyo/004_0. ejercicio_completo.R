@@ -9,18 +9,24 @@ library(goftest)
 library(lmtest)
 
 ##### Cargar datos ####
-url1= 'https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/precios_viviendas.csv'
-url2= 'https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/viviendas_sin_precios.csv'
+url1= 'https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/precio_viviendas2.csv'
+url2= 'https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/viviendas_sin_precio2.csv'
 
 datos<-read.csv(url1)
 datos_nuevos=read.csv(url2)
 
-
+datos2=datos[datos$precio<=20,]
+datos2$m2=sqrt(datos$m2)
+datos2=datos
+write.csv(datos2, "data\\precio_viviendas2.csv", row.names = F)
+datos3=data.frame(m2=datos2[c(11:127),2])
+write.csv(datos3, "data\\viviendas_sin_precio2.csv", row.names = F)
+plot(datos_nuevos)
 
 ###### 1 Descripción de los datos.
 
 plot(datos$m2, datos$precio)
-mod1<- lm(precio~m2,data=datos)
+mod1<- lm(log(precio)~m2,data=datos)
 abline(mod1,col="red")
 residuales=mod1$residuals
 
