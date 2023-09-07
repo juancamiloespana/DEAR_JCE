@@ -39,10 +39,9 @@ qqPlot(res)
 stats::shapiro.test(res)
 tseries::jarque.bera.test(res)
 
+
 stats::ks.test(res,pnorm,0,sd(res))
-
 goftest::ad.test(res,pnorm,0,sd(res)) 
-
 goftest::cvm.test(res,pnorm,0,sd(res))
 
 
@@ -57,7 +56,8 @@ abline(h=0)
 
 ####prueba estadísticas VArianza constante: homocedasticidad
 
-bptest(modelo) 
+bptest(modelo)
+gqtest(modelo)
 
 
 ###Independencia gráficos
