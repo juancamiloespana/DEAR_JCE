@@ -13,7 +13,7 @@ library(lmtest)
         ####Crear data frame
 
         
-      base_modelo=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/defectos.csv')
+      base_modelo=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/defectos.csv')
         
       ### Para simplificar nombre de variables
       
@@ -84,7 +84,7 @@ library(lmtest)
     ##1.2  Efectos sobre el modelo #####
         ####Crear variables ficticia 
           
-        datos=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/plantas.csv')
+        datos=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/plantas.csv')
         names(datos)=c("indice","y","x")
         
         
@@ -131,7 +131,7 @@ library(lmtest)
         
 
         
-        datos=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/flujo.csv')
+        datos=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/flujo.csv')
         names(datos)=c('ind','y','x')
     
         
@@ -168,7 +168,7 @@ library(lmtest)
     
     ###Crear base que incumple supuesto
     
-    datos=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/energia.csv')
+    datos=read.csv('https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/energia.csv')
     
         
     names(datos)=c("i","y","x") 
