@@ -11,6 +11,18 @@ plot(pib~sqrt(r_prod))
 
 min(r_prod)
 
+
+
+filas=sample(c(1:200),30)
+
+r_prod[filas[1:30]] =pib[filas[1:30]]*50+rnorm(30,200,70)
+
+
+max(r_prod)
+plot(r_prod~pib)
+
+
+
 prod=r_prod**4
 plot(prod~pib)
 
@@ -24,15 +36,6 @@ plot(p~pib)
 min(p)
 
 
-filas=sample(c(1:200),40)
-
-p[filas[1:20]] =(sqrt(pib[filas[1:20]])*100)+runif(20,-50,50)
-p[filas[21:40]] =(filas[21:40]*5)+runif(20,-50,50)
-
-
-
-max(p)
-plot(p~pib)
 
 df=data.frame(prod=p, pib=pib)
 
@@ -81,7 +84,7 @@ abline(mod_f)
 df_nuevo=data.frame(pib=20)
 v=predict(mod_f, newdata=df_nuevo, interval="prediction")
 
-v[3]**4
+v[1]**4
 
 
 shapiro.test(mod_f$res)
@@ -89,7 +92,7 @@ library(tseries)
 library(lmtest)
 
 bptest(mod_f)
-dwtest(mod_f)
+bgtest(mod_f)
 
 
 summary(mod_f)
@@ -108,7 +111,7 @@ abline(mod)
 shapiro.test(mod$res)
 bptest(mod)
 gqtest(mod)
-dwtest(mod)
+bgtest(mod)
 
 
 plot(mod$residuals~mod$fitted.values)
@@ -127,6 +130,6 @@ summary(mod2)
 shapiro.test(mod2$res)
 gqtest(mod2)
 bptest(mod2)
-dwtest(mod2)
+bgtest(mod2)
 
 plot(mod2$residuals~mod2$fitted.values)

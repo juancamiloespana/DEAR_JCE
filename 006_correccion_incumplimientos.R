@@ -85,3 +85,59 @@ df_plantas3=df_plantas[-lista_f_eliminar,] ### filtramos las filas identificadas
 #### de tare: ajustar modelo con df_plantas 3 
 
 
+
+##################### transformación respuesta ######
+
+library(tseries)
+library(lmtest)
+library(car) ### para fucnion powerTransform
+
+
+
+url2= "https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/energia.csv"
+
+df_energia=read.csv(url2)
+
+plot(gasto_energia~n_producto, data=df_energia)
+
+mod1=lm(gasto_energia~n_producto, data=df_energia)
+
+summary(powerTransform(mod1))
+
+
+################ transformación explicativa ##############
+
+df_energia$z=df_energia$gasto_energia**4 ## transformando la respuesta
+
+
+plot(z~n_producto, data=df_energia)
+
+
+## ajustamos modelo
+mod2= lm(z~n_producto, data=df_energia)
+
+abline(mod2, col="red")
+
+shapiro.test(mod2$residuals)
+bptest(mod2)
+dwtest(mod2)
+
+df_nuevo=data.frame(n_producto=500)
+
+
+z_pred=predict(mod2, newdata=df_nuevo)
+
+z_pred
+
+gasto_energia_pred= z_pred**(1/4)
+
+#######
+
+url3= "https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/flujo.csv"
+
+df_flujo=read.csv(url3)
+plot(utilidad~flujo, data=df_flujo)
+df_flujo$w=df_flujo$flujo^2
+plot(utilidad~w, data=df_flujo)
+mod3=lm(utilidad~w, data=df_flujo)
+abline(mod3, col="red")
