@@ -146,13 +146,13 @@ x2=x+rnorm(50,0,10)
 y=3*x +rnorm(50)
 
 datos=data.frame(y,x,x2)
+write.csv(datos, "data\\multicolinealidad.csv", row.names=F )
 
 
 ###### Ajuste un modelo con sólo el gasto en calidad
 ###### Cuánto crece la utilidad si se aumento una unidad la inversion en calidad
 
 mod1=lm(data=datos,y~x2)
-
 summary(mod1)
 
 

@@ -141,3 +141,28 @@ df_flujo$w=df_flujo$flujo^2
 plot(utilidad~w, data=df_flujo)
 mod3=lm(utilidad~w, data=df_flujo)
 abline(mod3, col="red")
+
+
+
+#####ejercicio en clase #### 
+
+
+library(plotly)
+
+url3= "https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/prod_pib.csv"
+
+### datos originales
+df_pib=read.csv(url3)
+
+
+### datos sin atipicos
+big_sup=quantile(df_pib$prod, 0.75) +IQR(df_pib$prod)
+df_pib_sa=subset(df_pib, df_pib$prod<=big_sup)
+
+
+###gráficos datos sin atipicos
+
+p=plot_ly(data=df_pib_sa, y=~prod, x=~pib, type="scatter" )
+layout(p, yaxis = list(range = c(0, 700)), xaxis = list(range = c(0, 25)))
+
+
