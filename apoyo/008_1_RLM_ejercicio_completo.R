@@ -21,9 +21,9 @@
 
 #######Cargar Base de Datos-ejemplo 
   
-url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/base_supermercado2.csv'
+url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/base_supermercado2.csv'
 
-data_original<-read.csv(url, dec=",", stringsAsFactors = T)
+data_original<-read.csv(url, dec=".", stringsAsFactors = T)
 
 #### 1. Descripción y limpieza de los datos #####
 
@@ -96,7 +96,6 @@ table(is.na(data_original))
   table(data_original$medio_apgo)
   
   data_original$medio_apgo= as.factor(data_original$medio_apgo) ### para que en el summary quede bien
-  
   
   
   obs_diasem<-table(data_original$dia_sem_mas_frecuente)

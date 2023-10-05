@@ -293,3 +293,5 @@ bgtest(modelo_reducido)
 
 
 
+
+
