@@ -73,7 +73,54 @@ df2$producto_frecuente=case_when(
 
 df2$producto_frecuente=as.factor(df2$producto_frecuente)
 
+table(df$reportado_data_credito)
 
+mod=lm(y~.-id-fecha_ultima_compra-producto_frecuente-prop_compras_bebe-medio_apgo-porp_compras_licores-reportado_data_credito, data=df2)
+summary(mod)
+
+int=as.numeric(df$reportado_data_credito)*as.numeric(df$medio_apgo)
+library(dplyr)
+df$usa_tc=case_when(df$medio_apgo=="TDC"~1,TRUE~0)
+df$reportado=case_when(df$reportado_data_credito=="NO"~0,TRUE~1)
+
+df2$p=as.Date(df$fecha_ultima_compra, format="%d/%m/%Y")
+help(as.Date)
+df2$p=as.numeric(format(as.Date(df$fecha_ultima_compra, format="%d/%m/%Y"), format="%u"))
+
+mod2=lm(df2$y~df2$usa_tc*df2$reportado +df2$p +df2$edad_cliente +df2$num__prom_compras_mensuales+df2$valor_promedio_mensual+df2$recencia_dias+df2$antiguedad_cliente+df2$genero )
+
+y=mod2$fitted.values +rnorm(5000, 475000,150000)
+
+mod3=lm(y~df2$usa_tc*df2$reportado +df2$p +df2$edad_cliente +df2$num__prom_compras_mensuales+df2$valor_promedio_mensual+df2$recencia_dias+df2$antiguedad_cliente+df2$genero )
+
+summary(mod3)
+
+mape(mod3$model$y,mod3$fitted.values)*100
+
+df$y=y
+
+df4=select(df, -reportado_data_credito,-porp_compras_licores,-prop_compras_bebe,-medio_apgo,-p)
+
+df$reportado_data_credito
+
+f=predict(mod)
+ajsute=lm(mod$residuals~df2$p+df2$usa_tc*df2$reportado)
+length(mod$residuals)
+summary(ajsute)
+mod$residuals[1]
+mod$fitted.values[1]
+ajsute$fitted.values[1]
+ajsute$model$`mod$residuals`[1]
+nrow(df)
+table(is.na(df))
+library(randomForest)
+df2=na.roughfix(df)
+df=df[,-24]
+
+write.csv(df4, 'data\\base_supermercado2.csv', row.names=F)
+
+library(Metrics)
+mape(mod$model$y,mod$fitted.values)
 #### Una variable con muchas categorías es difícil de analizar, puede hacer el modelo lento y 
 #### generar sobre ajustes, aunque no hay un número exacto para saber qué son muchas, podría utilizarse más de 20 o 30 como referencia
 #### según el estudio este valor se puede aumentar o disminuir
