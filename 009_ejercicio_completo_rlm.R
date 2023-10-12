@@ -3,7 +3,10 @@ library(dplyr) ### para utilizar funcion select case when
 
 url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/base_supermercado2.csv'
 
+
 df=read.csv(url, stringsAsFactors = T)
+
+min(df$y)
 
 ### tener ciuidado con variables con muchascategorias
 ##vamos eliminar productos frecuentes
@@ -25,7 +28,7 @@ table(is.na(df2))
 
 #### imputar datos faltantes 
 
-install.packages("randomForest") ### para imputación
+#install.packages("randomForest") ### para imputación
 library(randomForest)
 
 df2=na.roughfix(df2)
@@ -44,5 +47,8 @@ bigot_inf=quantile(df2$y,0.25) - 2*IQR(df2$y)
 df3=subset(df2, df2$y<=bigot_sup & df2$y>bigot_inf)
 
 boxplot(df3$y)
+
+
+
 
 
