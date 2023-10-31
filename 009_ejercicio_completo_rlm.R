@@ -133,3 +133,5 @@ mean(mod3$residuals)
 library(lmtest)
 bptest(mod3)
 
+
+
