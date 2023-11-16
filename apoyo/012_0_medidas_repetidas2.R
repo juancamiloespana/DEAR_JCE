@@ -5,7 +5,6 @@ install.packages("tidyverse") #### para utilizar funciones de manipulación de d
 install.packages("ggplot") #### para plotmeasn
 install.packages("rstatix") ### para función shapiro_test agrupada
 install.packages("ggpubr") ####Gráficos para vraibles agrupadas
-install.packages("forcats")
 install.packages("WRS2") ###Base de datos hangover
 
 ########### cargar librerías
@@ -96,12 +95,11 @@ pairwise.t.test(score,time,paired=T,p.adjust.method = "bonferroni") ### para un 
 
 
 
-
 ############################################
 ###### Ejercicio 2  análisis de sudoku ###
 ###########################################3
 
-url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/tiempos_sudokus.csv'
+url='https://raw.githubusercontent.com/juancamiloespana/DEAR_JCE/master/data/tiempos_sudokus.csv'
 sudoku=read.csv(url,sep=";",stringsAsFactors = T)
 
 
@@ -179,22 +177,13 @@ summary(automestima2)
 
 ###Comparación de tratamientos #
 
-pwc <- selfesteem2 %>%
-  group_by(treatment) %>%
-  pairwise_t_test(
-    score ~ time, paired = TRUE,
-    p.adjust.method = "bonferroni"
-  )
-pwc
 
 
-pwc <- selfesteem2 %>%
-  group_by(time) %>%
-  pairwise_t_test(
-    score ~ treatment, paired = TRUE,
-    p.adjust.method = "bonferroni"
-  )
-pwc
+pwc=pairwise.t.test(score, interaction(treatment,time),paired = T, p.adjust.method = 'bonferroni' )
+
+
+
+
 
 
 ############################################
